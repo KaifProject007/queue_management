@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus SmartQueue | Live Crowd & Wait Time Intelligence</title>
+    <!-- Three.js CDN & OrbitControls for 3D Campus Scene -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Chart.js CDN for friendly timeline visualizer -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css?v=3.0">
+</head>
+<body>
+
+    <!-- Ambient Glow Lights -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <!-- Sticky Header -->
+    <header class="app-header">
+        <div class="header-inner">
+            <a href="#" class="brand-wrapper">
+                <div class="brand-logo">SQ</div>
+                <div class="brand-text">
+                    <h1>Campus SmartQueue</h1>
+                    <p>AISSMS COE · Live Crowd Intelligence</p>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#hero3d">3D Campus Map</a>
+                <a href="#facilitiesSection">Live Facilities</a>
+                <a href="#tokenSection">Virtual FastPass</a>
+                <a href="#plannerSection">Smart Planner</a>
+                <a href="#heatmapSection">Weekly Heatmap</a>
+                <a href="#estimatorSection">Wait Estimator</a>
+                <a href="#techDrawer">AI Engine</a>
+            </nav>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="btn btn-glass" id="soundToggleBtn" onclick="toggleSound()" style="padding: 7px 14px; font-size: 0.8rem;" title="Toggle audio chimes and click sounds">
+                    🔊 Sound ON
+                </button>
+                <div class="nav-badge">
+                    <div class="pulse-dot"></div>
+                    <span>Campus Live</span>
+                </div>
+                <button class="btn btn-primary" onclick="openSubscribeModal()">
+                    🔔 Get Rush Alerts
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Centerpiece 3D Interactive Diorama Stage (Awwwards Design) -->
+    <section class="hero-section" id="hero3d">
+        <div class="hero-header-center">
+            <div class="hero-pill-tag">
+                <div class="pulse-dot"></div>
+                <span>AISSMS COE · 3D CAMPUS DIGITAL TWIN</span>
+            </div>
+            <h1 class="hero-giant-title">SmartQueue <span>2.0</span></h1>
+            <p class="hero-subtitle">
+                Real-time 3D crowd telemetry, Erlang C wait forecasting, and autonomous digital FastPass dispatch across AISSMS engineering campus.
+            </p>
+            <div class="hero-actions-center">
+                <a href="#facilitiesSection" class="btn btn-primary">🏢 Live Facilities</a>
+                <button class="btn btn-glass" onclick="campus3D && campus3D.toggleEvaluatorTour()" style="border-color: rgba(249, 115, 22, 0.4); color: #fb923c;">🎬 Evaluator Drone Tour</button>
+                <a href="#tokenSection" class="btn btn-glass">🎟️ Virtual FastPass</a>
+            </div>
+        </div>
+
+        <!-- Centerpiece 3D Diorama Stage -->
+        <div class="canvas-3d-stage">
+            <div class="canvas-toolbar-floating">
+                <button class="btn-canvas-tool" id="btn3dTour" onclick="campus3D && campus3D.toggleEvaluatorTour()" style="background: rgba(249, 115, 22, 0.22); border-color: rgba(249, 115, 22, 0.5); color: #fb923c;" title="Auto-Guided Campus Flythrough for Faculty & Evaluators">🎬 Evaluator Tour</button>
+                <button class="btn-canvas-tool" id="btn3dReset" onclick="campus3D && campus3D.resetCamera()" title="Reset 3D Perspective View">🔄 Default View</button>
+                <button class="btn-canvas-tool" id="btn3dAerial" onclick="campus3D && campus3D.setAerialView()" title="Top-Down Aerial Blueprint">🗺️ Aerial 2D</button>
+                <button class="btn-canvas-tool" id="btn3dDayNight" onclick="campus3D && campus3D.toggleDayNight()" title="Toggle Day/Night Mode">🌙 Day/Night</button>
+            </div>
+
+            <div class="canvas-floating-badge">
+                <span>🌐 AISSMS PUNE</span>
+                <span style="color: #94a3b8; font-weight: normal;">· Drag to Orbit · Scroll to Zoom</span>
+            </div>
+
+            <div id="campus3dContainer"></div>
+
+            <div class="canvas-scroll-hint">
+                <span>Scroll down to zoom into buildings</span>
+                <span style="color: #38bdf8;">↓</span>
+            </div>
+
+            <div class="canvas-legend-floating">
+                <span style="color: #10b981;">● Quiet</span>
+                <span style="color: #f59e0b;">● Moderate</span>
+                <span style="color: #ef4444;">● Rush</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Time Travel Simulation Bar -->
+    <section class="time-travel-bar">
+        <div class="time-travel-card">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div class="clock-pill">
+                    <div class="pulse-dot"></div>
+                    <span class="day-val" id="clockDayDisplay">Monday</span>
+                    <span class="clock-val" id="clockTimeDisplay">12:30 - 13:00</span>
+                </div>
+                <span style="font-size: 0.8rem; color: #94a3b8;">Simulate Campus Time:</span>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-glass" onclick="simulateStep(-1)" title="Go back 30 mins">⏪ -30m</button>
+                <button class="btn btn-glass" id="autoPlayBtn" onclick="toggleAutoPlay()">▶ Auto Play</button>
+                <button class="btn btn-glass" onclick="simulateStep(1)" title="Advance 30 mins">⏩ +30m</button>
+                <button class="btn btn-glass" onclick="jumpToMorningRush()">☕ 09:00 AM Xerox Rush</button>
+                <button class="btn btn-glass" style="color: #f97316; border-color: rgba(249,115,22,0.4);" onclick="jumpToLunchRush()">🍔 12:30 PM Lunch Peak</button>
+                <button class="btn btn-glass" onclick="jumpToQuietAfternoon()">📚 03:30 PM Quiet Study</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campus Pulse: 3 Instant Actionable AI Recommendations -->
+    <section class="pulse-advisor-section" style="max-width: 1400px; margin: 20px auto 30px; padding: 0 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px;">
+                ⚡ Campus Live Pulse & Smart Advice
+            </div>
+            <span style="font-size: 0.75rem; color: #64748b;">AI Real-Time Inference</span>
+        </div>
+        <div class="pulse-advisor-grid" id="pulseAdvisorGrid">
+            <!-- Dynamic advice cards rendered via app.js -->
+        </div>
+    </section>
+
+    <!-- Live Campus Facilities (3D Glass Cards) -->
+    <section id="facilitiesSection">
+        <div class="section-header">
+            <div>
+                <h3 class="section-title">Live Campus Facilities</h3>
+                <p class="section-subtitle">Real-time occupancy and estimated waiting times at service counters</p>
+            </div>
+            <span style="font-size: 0.82rem; color: #94a3b8;">Updated every 30 seconds</span>
+        </div>
+
+        <!-- Filter Tab Bar -->
+        <div class="filter-tab-bar">
+            <button class="filter-tab active" id="tab-all" onclick="filterFacilities('all')">🌟 All Spots (6)</button>
+            <button class="filter-tab" id="tab-coe" onclick="filterFacilities('coe')">🏛️ COE Building 1 (Academic)</button>
+            <button class="filter-tab" id="tab-services" onclick="filterFacilities('services')">🖨️ Services & Xerox [X]</button>
+            <button class="filter-tab" id="tab-quiet" onclick="filterFacilities('quiet')">🟢 Walk-In (No Wait)</button>
+        </div>
+
+        <div class="facility-grid" id="facilitiesGrid">
+            <!-- Dynamic 3D cards injected via app.js -->
+            <div style="color: #94a3b8; text-align: center; padding: 40px; grid-column: 1 / -1;">
+                Loading live facility telemetry...
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital FastPass Virtual Queue Token Dispenser -->
+    <section class="token-section" id="tokenSection">
+        <div class="token-container">
+            <!-- Left: Form -->
+            <div class="token-form-card">
+                <div>
+                    <div class="nav-badge" style="margin-bottom: 10px;">
+                        <span>🎫 DIGITAL FASTPASS DISPENSER</span>
+                    </div>
+                    <h3 style="font-size: 1.6rem; color: #ffffff; font-weight: 800;">Get a Virtual Queue Token</h3>
+                    <p style="font-size: 0.88rem; color: #94a3b8; margin-top: 6px;">
+                        Save your spot in line without waiting physically at the counter. The AI engine reserves your turn and predicts your exact call-in time.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.8rem; color: #cbd5e1; font-weight: 600; display: block; margin-bottom: 6px;">Select Facility:</label>
+                        <select id="tokenPlaceSelect" class="btn btn-glass" style="width: 100%; padding: 10px 14px; cursor: pointer;">
+                            <option value="1">COE Admission Office (Bldg 1)</option>
+                            <option value="2" selected>COE Student Section & Exam (Bldg 1)</option>
+                            <option value="3">Central Canteen (Quad Court)</option>
+                            <option value="4">MBA Parking Xerox Centre [X] (Bldg 2)</option>
+                            <option value="5">Hostel Dining & Mess</option>
+                            <option value="6">COE Central Library (Bldg 1)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.8rem; color: #cbd5e1; font-weight: 600; display: block; margin-bottom: 6px;">Department:</label>
+                        <select id="tokenDeptSelect" class="btn btn-glass" style="width: 100%; padding: 10px 14px; cursor: pointer;">
+                            <option value="AI&DS" selected>AI & Data Science (AI&DS)</option>
+                            <option value="COMP">Computer Engineering (COMP)</option>
+                            <option value="ROBO">Robotics & Automation (ROBO)</option>
+                            <option value="MECH">Mechanical Engineering (MECH)</option>
+                            <option value="ETC">Electronics & Telecom (E&TC)</option>
+                            <option value="CIVIL">Civil Engineering (CIVIL)</option>
+                            <option value="CHEM">Chemical Engineering (CHEM)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.8rem; color: #cbd5e1; font-weight: 600; display: block; margin-bottom: 6px;">Student Roll No. (Optional):</label>
+                    <input type="text" id="tokenStudentRoll" class="btn btn-glass" style="width: 100%; padding: 10px 14px; font-family: monospace;" value="25AI113" placeholder="e.g. 25AI113">
+                </div>
+
+                <button class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem; justify-content: center;" onclick="issueVirtualToken()">
+                    🎟️ Issue My FastPass Token
+                </button>
+            </div>
+
+            <!-- Right: Interactive Digital Pass Card -->
+            <div id="virtualPassContainer">
+                <div class="pass-card" id="activePassCard">
+                    <div class="pass-header">
+                        <div>
+                            <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 700; text-transform: uppercase;">AISSMS COE · Virtual Token</span>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff;" id="passPlaceName">Student Section & Exam</div>
+                        </div>
+                        <div class="pass-token-badge" id="passTokenCode">S-142</div>
+                    </div>
+
+                    <div class="pass-meta-grid">
+                        <div>
+                            <div class="pass-meta-label">Dept & Roll</div>
+                            <div class="pass-meta-val" id="passStudentDept">AI&DS · 25AI113</div>
+                        </div>
+                        <div>
+                            <div class="pass-meta-label">Estimated Call Time</div>
+                            <div class="pass-meta-val" style="color: #34d399;" id="passCallTime">12:35 PM</div>
+                        </div>
+                        <div>
+                            <div class="pass-meta-label">Ahead in Line</div>
+                            <div class="pass-meta-val" style="color: #f97316;" id="passAheadCount">2 Students</div>
+                        </div>
+                        <div>
+                            <div class="pass-meta-label">Active Desks</div>
+                            <div class="pass-meta-val" id="passCounters">3 Desks Open</div>
+                        </div>
+                    </div>
+
+                    <div class="smart-tip-pill" style="font-size: 0.78rem;">
+                        <span>📱</span>
+                        <span><b>Live Turn Alert:</b> You can grab tea or sit in the quad. We will ping you 2 mins before your turn!</span>
+                    </div>
+
+                    <div class="pass-barcode"></div>
+
+                    <div class="pass-live-tracker">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="tracker-dot"></div>
+                            <div class="pass-tracker-text">
+                                <span>FastPass Status: </span><b id="passStatusLive">Turn in Progress · Arrive 2m prior</b>
+                            </div>
+                        </div>
+                        <span style="font-size: 0.72rem; color: #10b981; font-weight: 700;">🟢 Active</span>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 16px;">
+                        <button class="btn btn-primary" style="flex: 1; justify-content: center; font-size: 0.85rem; padding: 9px 14px;" onclick="printVirtualTicket()">
+                            🖨️ Print / Save Ticket
+                        </button>
+                        <button class="btn btn-glass" style="font-size: 0.85rem; padding: 9px 14px;" onclick="locateTokenOn3DMap()">
+                            📍 Focus on 3D Map
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Smart Planner: When is it Quiet? -->
+    <section class="planner-section" id="plannerSection">
+        <div class="planner-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h3 style="font-size: 1.5rem; color: #ffffff; font-weight: 800;">Smart Planner: When Should I Go?</h3>
+                    <p style="font-size: 0.88rem; color: #94a3b8; margin-top: 4px;">
+                        Interactive crowd forecast wave throughout the college day
+                    </p>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label for="plannerPlaceSelect" style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600;">Choose Spot:</label>
+                    <select id="plannerPlaceSelect" class="btn btn-glass" style="cursor: pointer; padding: 8px 16px;" onchange="renderPlannerChart()">
+                        <option value="1">Admission Office</option>
+                        <option value="2">Student Section</option>
+                        <option value="3" selected>Canteen</option>
+                        <option value="4">Xerox Centre</option>
+                        <option value="5">Hostel Mess</option>
+                        <option value="6">Central Library</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Best Window Recommendation Banner -->
+            <div class="smart-tip-pill" id="plannerBestPill" style="margin-top: 20px; font-size: 0.95rem;">
+                <span style="font-size: 1.3rem;">💡</span>
+                <span id="plannerBestText">Analyzing daily footfall...</span>
+            </div>
+
+            <!-- Interactive Timeline Spline Wave -->
+            <div class="timeline-chart-wrapper">
+                <canvas id="plannerChartCanvas"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weekly Heatmap Grid Section -->
+    <section class="heatmap-section" id="heatmapSection">
+        <div class="heatmap-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h3 style="font-size: 1.5rem; color: #ffffff; font-weight: 800;">Weekly Footfall Matrix (6-Day Heatmap)</h3>
+                    <p style="font-size: 0.88rem; color: #94a3b8; margin-top: 4px;">
+                        Compare crowd trends across the entire college week (Monday to Saturday, 08:00 AM to 06:00 PM).
+                    </p>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label for="heatmapPlaceSelect" style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600;">Spot:</label>
+                    <select id="heatmapPlaceSelect" class="btn btn-glass" style="cursor: pointer; padding: 8px 16px;" onchange="loadWeeklyHeatmap()">
+                        <option value="1">Admin & Admission</option>
+                        <option value="2">Student Section</option>
+                        <option value="3" selected>Central Canteen</option>
+                        <option value="4">Xerox Centre</option>
+                        <option value="5">Hostel Mess</option>
+                        <option value="6">Central Library</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Heatmap Table Matrix -->
+            <div class="heatmap-scroll-container">
+                <table class="heatmap-table" id="heatmapMatrixTable">
+                    <thead id="heatmapMatrixHead">
+                        <!-- Headers generated dynamically via JS -->
+                    </thead>
+                    <tbody id="heatmapMatrixBody">
+                        <tr>
+                            <td colspan="21" style="text-align: center; color: #94a3b8; padding: 30px;">
+                                Loading weekly footfall matrix...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 12px; font-size: 0.8rem; color: #94a3b8;">
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <span><b>Crowd Level:</b></span>
+                    <span style="color: #34d399;">● Quiet (&lt;40%)</span>
+                    <span style="color: #fbbf24;">● Moderate (40-75%)</span>
+                    <span style="color: #f87171;">● Rush (&gt;75%)</span>
+                </div>
+                <div>💡 Click any slot cell to simulate campus conditions at that hour.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simplified Non-Tech Wait Estimator -->
+    <section class="planner-section" id="estimatorSection">
+        <div class="planner-card">
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 1.5rem; color: #ffffff; font-weight: 800;">Live Wait Time & Queue Estimator</h3>
+                <p style="font-size: 0.88rem; color: #94a3b8; margin-top: 4px;">
+                    See how queue lengths and waiting times change dynamically based on arrival rush and open counters.
+                </p>
+            </div>
+
+            <div class="estimator-grid">
+                <!-- Sliders -->
+                <div>
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                            <span>How crowded does it look?</span>
+                            <span id="crowdStateLabel" style="color: #38bdf8; font-weight: 700;">🚶 Moderate Activity</span>
+                        </div>
+                        <input type="range" min="0.3" max="4.0" step="0.1" value="1.2" class="slider-custom" id="sliderRush" oninput="updateFriendlyEstimator()">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #64748b; margin-top: 4px;">
+                            <span>🌱 Chill & Quiet</span>
+                            <span>🚶 Normal</span>
+                            <span>🔥 Heavy Peak Rush</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                            <span>Staff Desks / Cashiers Open:</span>
+                            <span id="counterStateLabel" style="color: #10b981; font-weight: 700;">3 Counters</span>
+                        </div>
+                        <input type="range" min="1" max="6" step="1" value="3" class="slider-custom" id="sliderDesks" oninput="updateFriendlyEstimator()">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #64748b; margin-top: 4px;">
+                            <span>1 Counter</span>
+                            <span>3 Counters</span>
+                            <span>6 Counters</span>
+                        </div>
+                    </div>
+
+                    <!-- Friendly Output Metric -->
+                    <div class="wait-time-hero" style="background: #0f172a;">
+                        <div>
+                            <div class="wait-label">Estimated Wait in Line</div>
+                            <div class="wait-num" style="color: #38bdf8;" id="estWaitDisplay">1.5 <small>mins</small></div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="wait-label">People in Front of You</div>
+                            <div class="wait-num" style="color: #f97316;" id="estQueueDisplay">3 <small>students</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animated Queue Visualizer -->
+                <div>
+                    <div class="animated-queue-stage">
+                        <div>
+                            <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase;">
+                                👥 Students in Line:
+                            </div>
+                            <div class="token-row" id="friendlyTokenRow">
+                                <!-- Person avatars pop in -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase;">
+                                🖥️ Service Desks:
+                            </div>
+                            <div class="desk-row" id="friendlyDeskRow">
+                                <!-- Desks rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collapsible Technical & AI Engine (For Evaluators & Faculty) -->
+    <section class="tech-drawer-section" id="techDrawer">
+        <div class="tech-drawer">
+            <div class="drawer-header" onclick="toggleTechDrawer()">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 1.2rem;">🔬</span>
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff;">Behind the AI & Mathematics (CEP Evaluation Details)</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">Click to expand technical models, Erlang C formulas, LightGBM tournament, and privacy proofs</div>
+                    </div>
+                </div>
+                <span id="drawerToggleIcon" style="color: var(--primary); font-size: 1.1rem; font-weight: bold;">+ Expand</span>
+            </div>
+
+            <div class="drawer-body" id="drawerBody">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Card 1: Machine Learning -->
+                    <div style="background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #1e293b;">
+                        <h4 style="color: #38bdf8; font-size: 0.9rem; margin-bottom: 8px;">1. LightGBM vs Baseline Gating</h4>
+                        <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5;">
+                            • Baseline Model (Weekly Rolling Mean): <b>MAE = 0.0478</b><br/>
+                            • LightGBM Regressor (200 trees, lr=0.05): <b>MAE = 0.0478</b><br/>
+                            • Automated Gating Rule: Deploys LightGBM strictly if error &le; baseline mean.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Erlang C Math -->
+                    <div style="background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #1e293b;">
+                        <h4 style="color: #f97316; font-size: 0.9rem; margin-bottom: 8px;">2. Erlang C Queueing Theory ($M/M/c$)</h4>
+                        <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5;">
+                            • Offered Load: $a = \lambda / \mu$<br/>
+                            • Counter Utilization: $\rho = a / c$<br/>
+                            • Wait Time: $W_q = C(c, a) / (c\mu - \lambda)$<br/>
+                            • Queue Length: $L_q = \lambda \cdot W_q$ (Little's Law)
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Privacy & Security -->
+                    <div style="background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #1e293b;">
+                        <h4 style="color: #10b981; font-size: 0.9rem; margin-bottom: 8px;">3. Salted SHA-256 Privacy Architecture</h4>
+                        <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5;">
+                            • Cryptographic salt + SHA-256 one-way hashing.<br/>
+                            • Zero raw student ID persistence.<br/>
+                            • &lt; 10 group suppression rule to prevent re-identification.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p><b>Campus SmartQueue 2.0</b> · Community Engagement Project (CEP)</p>
+        <p style="font-size: 0.78rem; margin-top: 6px; color: #64748b;">
+            Autonomous Telemetry · Erlang C Queueing Engine · LightGBM Regressor · Three.js 3D Visualizer
+        </p>
+    </footer>
+
+    <!-- Web Push Modal -->
+    <div class="modal-overlay" id="subscribeModal">
+        <div class="modal-content" style="background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 28px; max-width: 440px; margin: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="color: #ffffff; font-size: 1.15rem;">🔔 Smart Rush Alerts</h3>
+                <button onclick="closeSubscribeModal()" style="background: transparent; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 18px;">
+                Get notified directly when your favorite spot drops to a quiet window.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 6px;">Facility:</label>
+                    <select id="subPlaceSelect" class="btn btn-glass" style="width: 100%; padding: 8px 12px;">
+                        <option value="1">Admission Office</option>
+                        <option value="2">Student Section</option>
+                        <option value="3" selected>Canteen</option>
+                        <option value="4">Xerox Centre</option>
+                        <option value="5">Hostel Mess</option>
+                        <option value="6">Central Library</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 6px;">Alert Me When:</label>
+                    <select id="subThresholdSelect" class="btn btn-glass" style="width: 100%; padding: 8px 12px;">
+                        <option value="Low" selected>It becomes Quiet (Walk right in)</option>
+                        <option value="Medium">Wait time drops below 3 mins</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" style="margin-top: 10px; width: 100%; justify-content: center;" onclick="submitSubscription()">
+                    Save Alert Preference
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="appToast">Notification message</div>
+
+    <!-- Application JavaScript -->
+    <script src="/static/js/campus3d.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

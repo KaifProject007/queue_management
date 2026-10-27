@@ -1,0 +1,20 @@
+# Campus SmartQueue 2.0 - Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core Web Microservice & API
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pydantic>=2.5.0
+
+# Data Science & Machine Learning
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+lightgbm>=4.0.0
+
+# Testing & Client (for test_system.py)
+httpx>=0.27.0
+
+# PDF Guide Generator (optional)
+reportlab>=4.0.0
+pillow>=10.0.0

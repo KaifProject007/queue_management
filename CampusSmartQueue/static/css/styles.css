@@ -1,0 +1,1159 @@
+:root {
+    --bg-dark: #070a13;
+    --bg-card: rgba(19, 27, 46, 0.75);
+    --bg-card-hover: rgba(28, 40, 68, 0.9);
+    --bg-surface: #111827;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(249, 115, 22, 0.4);
+    --primary: #f97316;
+    --primary-hover: #ea580c;
+    --primary-glow: rgba(249, 115, 22, 0.35);
+    --accent-cyan: #38bdf8;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --level-low: #10b981;
+    --level-low-bg: rgba(16, 185, 129, 0.16);
+    --level-med: #f59e0b;
+    --level-med-bg: rgba(245, 158, 11, 0.16);
+    --level-high: #ef4444;
+    --level-high-bg: rgba(239, 68, 68, 0.2);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Ambient Lighting */
+.ambient-glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(140px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.15;
+}
+.glow-1 { top: -100px; left: -100px; background: #38bdf8; }
+.glow-2 { top: 30%; right: -150px; background: #f97316; }
+.glow-3 { bottom: 10%; left: 20%; background: #6366f1; }
+
+/* Sticky Header */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(7, 10, 19, 0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px 32px;
+}
+
+.header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.brand-logo {
+    width: 42px;
+    height: 42px;
+    background: radial-gradient(circle, #f97316 0%, #c2410c 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.15rem;
+    box-shadow: 0 0 20px var(--primary-glow);
+    border: 2px solid #fdba74;
+}
+
+.brand-text h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-text p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.nav-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+}
+
+.nav-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: #10b981;
+    font-weight: 700;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* =========================================================================
+   Awwwards-Inspired Hero & 3D Centerpiece Showcase
+   ========================================================================= */
+.hero-section {
+    position: relative;
+    padding: 36px 32px 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    z-index: 1;
+}
+
+.hero-header-center {
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto 28px;
+}
+
+.hero-pill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f97316;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+}
+
+.hero-giant-title {
+    font-size: 3.6rem;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.hero-giant-title span {
+    background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    max-width: 640px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+}
+
+.hero-actions-center {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+/* Centerpiece 3D Diorama Stage (Awwwards 3D Canvas Showcase) */
+.canvas-3d-stage {
+    position: relative;
+    height: 520px;
+    width: 100%;
+    background: radial-gradient(circle at center, #111a2e 0%, #080d19 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.85);
+}
+
+#campus3dContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.canvas-toolbar-floating {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+    flex-wrap: wrap;
+}
+
+.canvas-floating-badge {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: #38bdf8;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.canvas-scroll-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    animation: bounceHint 2.4s infinite;
+}
+
+@keyframes bounceHint {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -6px); }
+}
+
+.canvas-legend-floating {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 14px;
+    border-radius: 999px;
+    display: flex;
+    gap: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+    box-shadow: 0 4px 18px var(--primary-glow);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(249, 115, 22, 0.5);
+}
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+#campus3dContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.canvas-overlay-badge {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.canvas-legend {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: flex;
+    gap: 12px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.canvas-3d-tooltip {
+    position: fixed;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--primary);
+    padding: 8px 14px;
+    border-radius: 8px;
+    pointer-events: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    display: none;
+    font-size: 0.85rem;
+    color: #ffffff;
+    backdrop-filter: blur(8px);
+}
+
+/* Time Travel Bar */
+.time-travel-bar {
+    max-width: 1400px;
+    margin: 0 auto 30px;
+    padding: 0 32px;
+    z-index: 1;
+    position: relative;
+}
+
+.time-travel-card {
+    background: rgba(19, 27, 46, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.clock-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0f172a;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid #1e293b;
+}
+
+.clock-val {
+    font-family: monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.day-val {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Section Title */
+.section-header {
+    max-width: 1400px;
+    margin: 40px auto 20px;
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.section-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Facility 3D Tilt Cards Grid */
+.facility-grid {
+    max-width: 1400px;
+    margin: 0 auto 50px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    z-index: 1;
+    position: relative;
+}
+
+.facility-card-3d {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.facility-card-3d:hover {
+    transform: translateY(-6px) scale(1.01);
+    border-color: rgba(249, 115, 22, 0.4);
+    box-shadow: 0 25px 50px -10px rgba(249, 115, 22, 0.15);
+}
+
+.facility-card-3d.highlight-pulse {
+    border-color: var(--primary);
+    animation: cardPulse 1.5s ease-in-out;
+}
+
+@keyframes cardPulse {
+    0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.8); }
+    70% { box-shadow: 0 0 0 16px rgba(249, 115, 22, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+}
+
+.card-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.facility-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.facility-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+.status-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-Low {
+    background: var(--level-low-bg);
+    color: var(--level-low);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.status-Medium {
+    background: var(--level-med-bg);
+    color: var(--level-med);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.status-High {
+    background: var(--level-high-bg);
+    color: var(--level-high);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* Friendly Wait Box */
+.wait-time-hero {
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.wait-num {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.wait-num small {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.wait-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Density Bar */
+.occupancy-track {
+    height: 8px;
+    background: #1e293b;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.occupancy-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Best Time Recommendation Pill */
+.smart-tip-pill {
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px dashed rgba(56, 189, 248, 0.3);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Smart Planner / Interactive Timeline */
+.planner-section {
+    max-width: 1400px;
+    margin: 40px auto 60px;
+    padding: 0 32px;
+    z-index: 1;
+    position: relative;
+}
+
+.planner-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+}
+
+.timeline-chart-wrapper {
+    position: relative;
+    height: 280px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Non-Tech Queue Estimator */
+.estimator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+@media (max-width: 860px) {
+    .estimator-grid { grid-template-columns: 1fr; }
+}
+
+.slider-custom {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* Animated Student Token Line */
+.animated-queue-stage {
+    background: #090e1a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.token-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: 52px;
+    padding: 10px;
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px dashed #334155;
+}
+
+.person-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.desk-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.desk-box {
+    background: #1e293b;
+    border: 2px solid #38bdf8;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    min-width: 90px;
+    flex: 1;
+}
+
+.desk-box.busy {
+    border-color: var(--primary);
+    background: rgba(249, 115, 22, 0.12);
+}
+
+/* Behind the AI Collapsible Drawer */
+.tech-drawer-section {
+    max-width: 1400px;
+    margin: 40px auto 80px;
+    padding: 0 32px;
+}
+
+.tech-drawer {
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.drawer-header {
+    padding: 18px 24px;
+    background: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.drawer-header:hover {
+    background: #17223b;
+}
+
+.drawer-body {
+    padding: 24px;
+    display: none;
+    border-top: 1px solid #1e293b;
+    animation: fadeIn 0.3s ease;
+}
+
+.drawer-body.open {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+.app-footer {
+    border-top: 1px solid var(--border-color);
+    background: #070a13;
+    padding: 30px 32px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    z-index: 1;
+    position: relative;
+}
+
+/* 3D Viewport Toolbar */
+.canvas-toolbar {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.btn-canvas-tool {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-canvas-tool:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: var(--primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Virtual FastPass Token Section */
+.token-section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 32px;
+}
+
+.token-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    backdrop-filter: blur(12px);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 36px;
+    align-items: center;
+}
+
+@media (max-width: 900px) {
+    .token-container { grid-template-columns: 1fr; }
+}
+
+.token-form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.pass-card {
+    background: linear-gradient(135deg, #0b1120 0%, #172554 100%);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 18px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(2, 6, 23, 0.6);
+    overflow: hidden;
+    animation: fadeIn 0.4s ease;
+}
+
+.pass-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #f97316, #ec4899, #38bdf8);
+}
+
+.pass-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+}
+
+.pass-token-badge {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #38bdf8;
+    text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    font-family: monospace;
+}
+
+.pass-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+}
+
+.pass-meta-label {
+    color: #94a3b8;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pass-meta-val {
+    color: #f8fafc;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.pass-barcode {
+    height: 38px;
+    background: repeating-linear-gradient(90deg, #ffffff, #ffffff 2px, transparent 2px, transparent 6px, #ffffff 6px, #ffffff 9px, transparent 9px, transparent 13px);
+    opacity: 0.7;
+    border-radius: 4px;
+    margin-top: 14px;
+}
+
+/* Weekly Footfall Heatmap Grid */
+.heatmap-section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 32px;
+}
+
+.heatmap-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    backdrop-filter: blur(12px);
+}
+
+.heatmap-scroll-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    padding-bottom: 8px;
+}
+
+.heatmap-table {
+    width: 100%;
+    min-width: 820px;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+.heatmap-th {
+    padding: 8px 4px;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: center;
+    font-weight: 600;
+}
+
+.heatmap-day-label {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: #f1f5f9;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.heatmap-cell {
+    height: 38px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    vertical-align: middle;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.15);
+    z-index: 10;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.hm-low { background: rgba(16, 185, 129, 0.28); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+.hm-med { background: rgba(245, 158, 11, 0.35); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.45); }
+.hm-high { background: rgba(239, 68, 68, 0.45); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.55); }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary);
+    box-shadow: var(--shadow);
+    display: none;
+    z-index: 2000;
+}
+
+/* ----------------- Real-time Campus Pulse Advisor Cards (Bento Style) ----------------- */
+.pulse-advisor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 14px;
+}
+
+@media (max-width: 1024px) {
+    .pulse-advisor-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.advisor-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.65);
+}
+
+.advisor-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 5px 0 0 5px;
+}
+
+.advisor-card.card-green::before { background: #10b981; box-shadow: 0 0 12px #10b981; }
+.advisor-card.card-amber::before { background: #f59e0b; box-shadow: 0 0 12px #f59e0b; }
+.advisor-card.card-cyan::before { background: #38bdf8; box-shadow: 0 0 12px #38bdf8; }
+
+.advisor-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.85);
+}
+
+.advisor-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.advisor-label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.advisor-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.35;
+}
+
+.advisor-desc {
+    font-size: 0.84rem;
+    color: #cbd5e1;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* ----------------- Filter Tabs Bar (Awwwards Floating Pills) ----------------- */
+.filter-tab-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+}
+
+.filter-tab:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(249, 115, 22, 0.1) 100%);
+    border-color: #f97316;
+    color: #f97316;
+    font-weight: 700;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.35);
+    transform: translateY(-2px);
+}
+
+/* ----------------- Pass Live Countdown & QR Simulator ----------------- */
+.pass-live-tracker {
+    margin-top: 14px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.pass-tracker-text {
+    font-size: 0.78rem;
+    color: #94a3b8;
+}
+
+.pass-tracker-text b {
+    color: #38bdf8;
+}
+
+.tracker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.25); }
+}
+
+/* 3D Facility Card Pulse on Selection */
+.highlight-pulse {
+    animation: highlightCardPulse 1.8s ease;
+}
+
+@keyframes highlightCardPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(249, 115, 22, 0); }
+    30% { transform: scale(1.03); box-shadow: 0 0 35px rgba(249, 115, 22, 0.6); border-color: #f97316; }
+    100% { transform: scale(1); box-shadow: var(--shadow); }
+}
